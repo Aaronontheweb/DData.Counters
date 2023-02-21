@@ -12,7 +12,7 @@ public sealed class DDataCounterReader : ReceiveActor
     private readonly ILoggingAdapter _logger = Context.GetLogger();
     private readonly IActorRef _replicator;
     
-    public readonly GCounter GCounter = GCounter.Empty;
+    public GCounter GCounter = GCounter.Empty;
 
     public DDataCounterReader(IActorRef replicator)
     {
@@ -22,13 +22,15 @@ public sealed class DDataCounterReader : ReceiveActor
         Receive<Changed>(changed => changed.Key.Equals(CounterKey), update =>
         {
             var counter = update.Get(CounterKey);
-            GCounter.Merge(counter);
+           GCounter = GCounter.Merge(counter);
             _logger.Info("Counter changed to {0}", counter);
             // print counter values from all nodes
             foreach (var i in counter.State)
             {
                 _logger.Info($"Counter value on node {i.Key} is {i.Value}");
             }
+            
+            _logger.Info($"Aggregate counter value is {GCounter.Value}");
         });
     }
 
