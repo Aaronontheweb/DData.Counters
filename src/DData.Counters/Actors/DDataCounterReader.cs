@@ -11,6 +11,8 @@ public sealed class DDataCounterReader : ReceiveActor
     // add logger, cluster, and reference to replicator actor
     private readonly ILoggingAdapter _logger = Context.GetLogger();
     private readonly IActorRef _replicator;
+    
+    public readonly GCounter GCounter = GCounter.Empty;
 
     public DDataCounterReader(IActorRef replicator)
     {
@@ -20,6 +22,7 @@ public sealed class DDataCounterReader : ReceiveActor
         Receive<Changed>(changed => changed.Key.Equals(CounterKey), update =>
         {
             var counter = update.Get(CounterKey);
+            GCounter.Merge(counter);
             _logger.Info("Counter changed to {0}", counter);
             // print counter values from all nodes
             foreach (var i in counter.State)
