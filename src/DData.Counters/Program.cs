@@ -5,6 +5,7 @@ using Akka.Cluster.Hosting;
 using Akka.DistributedData;
 using Akka.Hosting;
 using Akka.Remote.Hosting;
+using DData.Counters;
 using DData.Counters.Actors;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -38,25 +39,9 @@ var builder = new HostBuilder()
                     }", HoconAddMode.Prepend)
                 .WithRemoting(hostName, port)
                 .WithClustering(new ClusterOptions(){ Roles = new []{"ddata"}, SeedNodes = seeds})
-                .WithActors((system, registry) =>
-                {
-                    var replicator = DistributedData.Get(system).Replicator;
-                    registry.Register<ReplicatorKey>(replicator);
-                })
-                .WithActors((system, registry) =>
-                {
-                    // add DDataCounterReader actor
-                    var replicator = registry.Get<ReplicatorKey>();
-                    var reader = system.ActorOf(Props.Create(() => new DDataCounterReader(replicator)), "reader");
-                    registry.Register<DDataCounterReader>(reader);
-                })
-                .WithActors((system, registry) =>
-                {
-                    // add DDataWriter actor
-                    var replicator = registry.Get<ReplicatorKey>();
-                    var writer = system.ActorOf(Props.Create(() => new DDataWriter(replicator)), "writer");
-                    registry.Register<DDataWriter>(writer);
-                });
+                .AddReplicator()
+                .AddCounterReaderActor()
+                .AddCounterWriterActor();
         });
     })
     .Build();
