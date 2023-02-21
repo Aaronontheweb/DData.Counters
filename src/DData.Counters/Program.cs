@@ -26,9 +26,7 @@ var builder = new HostBuilder()
         // maps to environment variable Akka__ClusterPort
         var port = akkaSection.GetValue<int>("ClusterPort", 0);
 
-        var seeds = akkaSection.GetValue<string[]>("ClusterSeeds", new[] { "akka.tcp://DDataCounter@localhost:8110" })
-            .Select(Address.Parse)
-            .ToArray();
+        var seeds = akkaSection.GetValue<string[]>("ClusterSeeds", new[] { "akka.tcp://DDataCounter@localhost:8110" });
         
         collection.AddAkka("DDataCounter", configurationBuilder =>
         {
@@ -38,7 +36,7 @@ var builder = new HostBuilder()
                         role = ddata
                         gossip-interval = 10 s
                     }", HoconAddMode.Prepend)
-                .WithRemoting("localhost", 0)
+                .WithRemoting(hostName, port)
                 .WithClustering(new ClusterOptions(){ Roles = new []{"ddata"}, SeedNodes = seeds})
                 .WithActors((system, registry) =>
                 {
