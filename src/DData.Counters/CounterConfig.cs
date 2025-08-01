@@ -33,8 +33,19 @@ public static class CounterConfig
         {
             // add DDataWriter actor
             var replicator = registry.Get<ReplicatorKey>();
-            var writer = system.ActorOf(Props.Create(() => new DDataWriter(replicator)), "writer");
-            registry.Register<DDataWriter>(writer);
+            var writer = system.ActorOf(Props.Create(() => new DDataCounterWriter(replicator)), "writer");
+            registry.Register<DDataCounterWriter>(writer);
+        });
+    }
+    
+    public static AkkaConfigurationBuilder AddLwwDictionaryActor(this AkkaConfigurationBuilder builder)
+    {
+        return builder.WithActors((system, registry) =>
+        {
+            // add DDataWriter actor
+            var replicator = registry.Get<ReplicatorKey>();
+            var writer = system.ActorOf(Props.Create(() => new DDataDictionaryWriter(replicator)), "lww-dictionary-writer");
+            registry.Register<DDataDictionaryWriter>(writer);
         });
     }
 }

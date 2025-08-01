@@ -7,4 +7,6 @@ public class ReplicatorKey{}
 public static class DDataKeys
 {
     public static readonly GCounterKey CounterKey = new("mycounter");
+
+    public static readonly LWWDictionaryKey<string,string> DictionaryKey = new("mydictionary");
 }

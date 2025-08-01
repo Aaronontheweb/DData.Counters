@@ -41,7 +41,8 @@ var builder = new HostBuilder()
                 .WithClustering(new ClusterOptions(){ Roles = new []{"ddata"}, SeedNodes = seeds})
                 .AddReplicator()
                 .AddCounterReaderActor()
-                .AddCounterWriterActor();
+                .AddCounterWriterActor()
+                .AddLwwDictionaryActor();
         });
     })
     .Build();

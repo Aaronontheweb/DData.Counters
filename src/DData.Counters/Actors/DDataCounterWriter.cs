@@ -6,7 +6,7 @@ using static DData.Counters.Actors.DDataKeys;
 
 namespace DData.Counters.Actors;
 
-public sealed class DDataWriter : ReceiveActor, IWithTimers
+public sealed class DDataCounterWriter : ReceiveActor, IWithTimers
 {
     private readonly ILoggingAdapter _log = Context.GetLogger();
     private readonly IActorRef _replicator;
@@ -22,7 +22,7 @@ public sealed class DDataWriter : ReceiveActor, IWithTimers
         public static readonly Increment Instance = new();
     }
 
-    public DDataWriter(IActorRef replicator)
+    public DDataCounterWriter(IActorRef replicator)
     {
         _replicator = replicator;
 
