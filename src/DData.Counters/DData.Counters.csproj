@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Akka.Cluster.Hosting" Version="1.5.46" />
+      <PackageReference Include="Akka.Cluster.Hosting" Version="1.5.48.1" />
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.8" />
     </ItemGroup>
 
